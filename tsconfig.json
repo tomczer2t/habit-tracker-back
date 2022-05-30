@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "target": "ES6",
+    "downlevelIteration": true,
+    "lib": ["es6", "dom.iterable", "DOM"],
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "module": "CommonJS"
+  }
+}
