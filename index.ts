@@ -1,6 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
+import './utils/db';
 
 const app = express();
 
