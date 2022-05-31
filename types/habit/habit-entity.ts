@@ -1,9 +1,10 @@
 export interface HabitEntity {
   id?: string;
-  userId?: string;
+  userId: string;
   name: string;
   stats: number[];
-  order: number;
+  orderNo: number;
   color: string;
-  createdAt: Date;
+  firstStatDate: Date;
+  lastStatUpdateDate: Date;
 }
