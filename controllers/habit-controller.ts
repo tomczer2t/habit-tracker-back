@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { HabitRecord } from '../records/habit.record';
+import { HabitRecord } from '../records/habit-record';
 import { HabitEntity } from '../types';
 
 export class HabitController {
