@@ -64,4 +64,8 @@ export class HabitRecord implements HabitEntity {
       lastStatUpdateDate: new Date(),
     });
   }
+
+  async delete() {
+    await pool.execute('DELETE FROM `habits` WHERE `id` = :id', { id: this.id });
+  }
 }
