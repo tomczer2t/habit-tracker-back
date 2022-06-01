@@ -1,9 +1,9 @@
 import { CorsOptions } from 'cors';
-import { allowedOrigins } from './allowedOrigins';
+import { config } from './config';
 
 export const corsConfig: CorsOptions = {
   origin: (requestOrigin, callback) => {
-    if (allowedOrigins.includes(requestOrigin) || requestOrigin === undefined) {
+    if (config.ALLOWED_ORIGINS.includes(requestOrigin) || requestOrigin === undefined) {
       callback(null, true);
     } else {
       callback(new Error('Not alloweb by CORS policy.'));
