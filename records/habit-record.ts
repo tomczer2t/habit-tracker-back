@@ -2,6 +2,8 @@ import { pool } from '../utils/db';
 import { HabitEntity } from '../types';
 import { v4 as uuid } from 'uuid';
 import { FieldPacket } from 'mysql2';
+import { CustomError } from '../utils/handleError';
+import { updateStatsByDays } from '../utils/updateStatsByDays';
 
 type MysqlHabitsResponse = [HabitEntity[], FieldPacket[]];
 
@@ -29,20 +31,27 @@ export class HabitRecord implements HabitEntity {
   static async listAllByUserId(userId: string) {
     const [res] = await pool.execute('SELECT * FROM `habits` WHERE `userId` = :userId ORDER BY `orderNo`', { userId }) as MysqlHabitsResponse;
     res.forEach(habitObj => {
-      const lastDays = habitObj.lastStatUpdateDate.getTime() / (1000 * 60 * 60 * 24);
-      const currDays = new Date().getTime() / (1000 * 60 * 60 * 24);
-      const differenceInDays = (Number.parseInt((currDays - lastDays + '')));
-      habitObj.stats.push(...Array(differenceInDays).fill(0));
+      updateStatsByDays(habitObj);
     });
     return res.map(habit => new HabitRecord(habit));
   }
 
   static async getOneById(id: string) {
     const [res] = await pool.execute('SELECT * FROM `habits` WHERE `id` = :id', { id }) as MysqlHabitsResponse;
-    return res[0] ? new HabitRecord(res[0]) : null;
+    if (!res[0]) return null;
+    updateStatsByDays(res[0]);
+    return new HabitRecord(res[0]);
+  }
+
+  static async getHabitsCount(userId: string) {
+    const [res] = await pool.execute('SELECT COUNT (*) AS "counter" FROM `habits` WHERE `userId` = :userId', { userId }) as [{ counter: number }[], FieldPacket[]];
+    return res[0].counter;
   }
 
   async insert() {
+    const [res] = await pool.execute('SELECT * FROM `habits` WHERE `userId` = :userId AND `name` = :name', this) as MysqlHabitsResponse;
+    if (res[0]) throw new CustomError('You have already added habit with that name.', 409);
+
     this.id = uuid();
     await pool.execute('INSERT INTO `habits` VALUES(:id, :userId, :name, :stats, :color, :orderNo, :firstStatDate, :lastStatUpdateDate)', {
       id: this.id,
