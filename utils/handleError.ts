@@ -7,6 +7,7 @@ export class CustomError extends Error {
 }
 
 export const handleError = (err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.log({ err });
   if (err instanceof CustomError) {
     res.status(err.status).json({
       success: false,
