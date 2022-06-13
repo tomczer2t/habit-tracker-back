@@ -10,6 +10,7 @@
     "lib": ["es6", "dom.iterable", "DOM"],
     "outDir": "dist",
     "moduleResolution": "node",
-    "module": "CommonJS"
+    "module": "CommonJS",
+    "typeRoots": ["./node_modules/@types", "./types"]
   }
 }
