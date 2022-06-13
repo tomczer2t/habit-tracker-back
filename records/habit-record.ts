@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { FieldPacket } from 'mysql2';
 import { CustomError } from '../utils/handleError';
 import { updateStatsByDays } from '../utils/updateStatsByDays';
+import { EMAIL_REGEX } from './user-record';
 
 type MysqlHabitsResponse = [HabitEntity[], FieldPacket[]];
 
@@ -26,6 +27,19 @@ export class HabitRecord implements HabitEntity {
     this.orderNo = obj.orderNo;
     this.firstStatDate = obj.firstStatDate;
     this.lastStatUpdateDate = obj.lastStatUpdateDate;
+    this.validate();
+  }
+
+  private validate() {
+    if (!this.name) {
+      throw new CustomError('Habit name is required.');
+    }
+    if (this.name.length > 40) {
+      throw new CustomError('Habit name cannot be longer than 40 characters.');
+    }
+    if (this.color.length !== 7 || !this.color.includes('#')) {
+      throw new CustomError('Habit color must be appropriate to hexadecimal pattern.');
+    }
   }
 
   static async listAllByUserId(userId: string) {
@@ -67,6 +81,7 @@ export class HabitRecord implements HabitEntity {
   }
 
   async update() {
+    this.validate();
     await pool.execute('UPDATE `habits` SET `name` = :name, `stats` = :stats, `color` = :color, `orderNo` = :orderNo, `lastStatUpdateDate` = :lastStatUpdateDate WHERE `id` = :id', {
       ...this,
       stats: JSON.stringify(this.stats),
