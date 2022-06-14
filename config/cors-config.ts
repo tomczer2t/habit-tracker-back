@@ -6,7 +6,7 @@ export const corsConfig: CorsOptions = {
     if (config.ALLOWED_ORIGINS.includes(requestOrigin) || requestOrigin === undefined) {
       callback(null, true);
     } else {
-      callback(new Error('Not alloweb by CORS policy.'));
+      callback(new Error('Not allowed by CORS policy.'));
     }
   },
   optionsSuccessStatus: 200,

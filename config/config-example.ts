@@ -3,7 +3,7 @@
 export const config = {
   DB_USER: '',
   DB_PASSWORD: '',
-  DB_DATABSE: '',
+  DB_DATABASE: '',
   ALLOWED_ORIGINS: [''],
 }
 
