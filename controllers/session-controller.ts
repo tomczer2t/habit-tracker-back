@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { compare } from 'bcrypt';
 import { sign, verify } from 'jsonwebtoken';
-import { UserRecord } from '../records/user-record';
+import { User } from '../records/user-record';
 import { CustomError } from '../utils/handleError';
 import { config } from '../config/config';
 
@@ -9,7 +9,7 @@ export class SessionController {
   static async create(req: Request, res: Response) {
     const { email, password } = req.body;
     if (!email || !password) throw new CustomError('Email and password are required.', 400);
-    const user = await UserRecord.getByEmail(email);
+    const user = await User.getByEmail(email);
     if (!user) throw new CustomError('Wrong email or password', 401);
     const match = await compare(password, user.password);
     if (!match) throw new CustomError('Wrong email or password', 401);
@@ -32,7 +32,7 @@ export class SessionController {
       const refreshToken = req.cookies['__refresh'];
       if (!refreshToken) return res.sendStatus(401);
       const { id } = verify(refreshToken, config.REFRESH_TOKEN_SECRET) as { id: string };
-      const user = await UserRecord.getById(id);
+      const user = await User.getById(id);
       if (user?.refreshToken !== refreshToken) return res.sendStatus(403);
       const accessToken = sign({ id }, config.ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
       res.json(accessToken);
@@ -47,7 +47,7 @@ export class SessionController {
     const refreshToken = req.cookies['__refresh'];
     if (!refreshToken) return res.sendStatus(200);
     const { id } = verify(refreshToken, config.REFRESH_TOKEN_SECRET) as { id: string };
-    const user = await UserRecord.getById(id);
+    const user = await User.getById(id);
     if (!user) return res.sendStatus(200);
     user.refreshToken = null;
     await user.update();

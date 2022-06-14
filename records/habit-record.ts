@@ -4,7 +4,6 @@ import { v4 as uuid } from 'uuid';
 import { FieldPacket } from 'mysql2';
 import { CustomError } from '../utils/handleError';
 import { updateStatsByDays } from '../utils/updateStatsByDays';
-import { EMAIL_REGEX } from './user-record';
 
 type MysqlHabitsResponse = [HabitEntity[], FieldPacket[]];
 
@@ -12,11 +11,11 @@ export class HabitRecord implements HabitEntity {
   id?: string;
   userId: string;
   name: string;
-  stats: number[];
+  stats?: number[];
   color: string;
   orderNo: number;
-  firstStatDate: Date;
-  lastStatUpdateDate: Date;
+  firstStatDate?: Date;
+  lastStatUpdateDate?: Date;
 
   constructor(obj: HabitEntity) {
     this.id = obj.id;
@@ -39,6 +38,9 @@ export class HabitRecord implements HabitEntity {
     }
     if (this.color.length !== 7 || !this.color.includes('#')) {
       throw new CustomError('Habit color must be appropriate to hexadecimal pattern.');
+    }
+    if (!this.userId) {
+      throw new CustomError('There is no userId', 500);
     }
   }
 
@@ -67,15 +69,12 @@ export class HabitRecord implements HabitEntity {
     if (res[0]) throw new CustomError('You have already added habit with that name.', 409);
 
     this.id = uuid();
+    this.stats = Array(40).fill(0);
+    this.firstStatDate = new Date(Date.now() - 39 * 24 * 60 * 60 * 1000);
+    this.lastStatUpdateDate = new Date();
     await pool.execute('INSERT INTO `habits` VALUES(:id, :userId, :name, :stats, :color, :orderNo, :firstStatDate, :lastStatUpdateDate)', {
-      id: this.id,
-      userId: this.userId,
-      name: this.name,
+      ...this,
       stats: JSON.stringify(this.stats),
-      color: this.color,
-      orderNo: this.orderNo,
-      firstStatDate: this.firstStatDate,
-      lastStatUpdateDate: this.lastStatUpdateDate,
     });
     return this.id;
   }
