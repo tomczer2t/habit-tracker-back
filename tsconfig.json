@@ -7,7 +7,7 @@
     "sourceMap": true,
     "target": "ES6",
     "downlevelIteration": true,
-    "lib": ["es6", "dom.iterable", "DOM"],
+    "lib": ["es6"],
     "outDir": "dist",
     "moduleResolution": "node",
     "module": "CommonJS",
