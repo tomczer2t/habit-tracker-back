@@ -11,6 +11,7 @@ import { usersRouter } from './routes/users-routes';
 import { sessionsRouter } from './routes/sessions-routes';
 import { credentials } from './middleware/credentials';
 import { verifyAccessToken } from './middleware/verifyAccessToken';
+import { rateLimiter } from './middleware/rateLimiter';
 
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(credentials);
 app.use(cors(corsConfig));
 app.use(express.json());
 app.use(cookieParser());
+app.use(rateLimiter)
 app.use(morgan('dev'));
 
 
@@ -32,6 +34,6 @@ apiRouter.use('/habits', verifyAccessToken, habitsRouter);
 app.use(handleError);
 
 
-app.listen(3001,'0.0.0.0', () => {
+app.listen(3001, () => {
   console.log('Server is listening on http://localhost:3001');
 });

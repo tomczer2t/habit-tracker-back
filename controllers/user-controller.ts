@@ -1,4 +1,4 @@
-import { EMAIL_REGEX, User } from '../records/user-record';
+import { UserRecord } from '../records/user-record';
 import { Request, Response } from 'express';
 import { CustomError } from '../utils/handleError';
 import { compare } from 'bcrypt';
@@ -7,14 +7,14 @@ import { updateUserValidator } from '../utils/updateUserValidator';
 export class UserController {
   static async register(req: Request, res: Response) {
     const userReq = req.body;
-    const user = new User(userReq);
+    const user = new UserRecord(userReq);
     await user.insert();
     res.sendStatus(201);
   }
 
   static async delete(req: Request, res: Response) {
     const { userId } = req.params;
-    const user = await User.getById(userId);
+    const user = await UserRecord.getById(userId);
     await user.delete();
     res.sendStatus(200);
   }
@@ -22,7 +22,7 @@ export class UserController {
   static async update(req: Request, res: Response) {
     const { userId } = req.params;
     const { password, newPassword, newEmail } = req.body as { password: string, newEmail?: string, newPassword?: string };
-    const user = await User.getById(userId);
+    const user = await UserRecord.getById(userId);
     if (!user) throw new Error('No user with that id');
     const match = await compare(password, user.password);
     if (!match) {
