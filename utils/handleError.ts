@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { saveLog } from './saveLog';
 
 export class CustomError extends Error {
   constructor(public message: string, public status = 400) {
@@ -6,7 +7,7 @@ export class CustomError extends Error {
   }
 }
 
-export const handleError = (err: Error, req: Request, res: Response, next: NextFunction) => {
+export const handleError = async (err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log({ err });
   if (err instanceof CustomError) {
     res.status(err.status).json({
@@ -14,6 +15,7 @@ export const handleError = (err: Error, req: Request, res: Response, next: NextF
       message: err.message,
     });
   } else {
+    await saveLog(`${err.name}: ${err.message}`, 'errorLogs.txt');
     res.status(500).json({
       success: false,
       message: 'Sorry, something went wrong. We are already trying to fix it. Please try again later.',
