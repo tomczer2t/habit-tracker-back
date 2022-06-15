@@ -8,7 +8,7 @@ export const saveLog = async (txt: string, fileName: string) => {
   if (!existsSync(logsPathDir)) {
     await fsPromises.mkdir(logsPathDir);
   }
-  const dateTime = new Date().toLocaleDateString();
+  const dateTime = new Date().toLocaleString();
   const message = `${ dateTime }\t${uuid()}\t${ txt }\n`;
   await fsPromises.appendFile(join(logsPathDir, fileName), message);
 };
