@@ -5,9 +5,6 @@ import { FieldPacket } from 'mysql2';
 import { CustomError } from '../utils/handleError';
 import { updateStatsByDays } from '../utils/updateStatsByDays';
 
-interface HabitEntityResponse extends Omit<HabitEntity, 'stats'> {
-  stats: string;
-}
 
 type MysqlHabitsResponse = [HabitEntity[], FieldPacket[]];
 
@@ -90,7 +87,7 @@ export class HabitRecord implements HabitEntity {
     await pool.execute('UPDATE `habits` SET `name` = :name, `stats` = :stats, `color` = :color, `orderNo` = :orderNo, `lastStatUpdateDate` = :lastStatUpdateDate WHERE `id` = :id', {
       ...this,
       stats: JSON.stringify(this.stats),
-      lastStatUpdateDate: new Date(),
+      lastStatUpdateDate: new Date(this.lastStatUpdateDate),
     });
   }
 

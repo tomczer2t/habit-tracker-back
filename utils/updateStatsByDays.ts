@@ -1,6 +1,6 @@
 import { HabitEntity } from '../types';
 
-export const updateStatsByDays = (habit: HabitEntity) => {
+export const updateStatsByDays = (habit: HabitEntity, currClientDate?: string) => {
   const lastDays = Math.floor(habit.lastStatUpdateDate.setHours(0, 0, 0, 0) / (1000 * 60 * 60 * 24));
   const currDays = Math.floor(new Date().setHours(0, 0, 0, 0) / (1000 * 60 * 60 * 24));
   const differenceInDays = currDays - lastDays;
@@ -14,5 +14,5 @@ export const updateStatsByDays = (habit: HabitEntity) => {
   } else {
     habit.stats.push(...Array(differenceInDays).fill(0));
   }
-  habit.lastStatUpdateDate = new Date(new Date().setHours(0, 0, 0, 0));
+  // habit.lastStatUpdateDate = new Date(new Date().setHours(0, 0, 0, 0));
 };

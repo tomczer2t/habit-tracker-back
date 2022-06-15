@@ -43,6 +43,6 @@ export class HabitController {
     const habit = await HabitRecord.getOneById(habitId);
     if (habit.userId !== req.userId) res.sendStatus(403);
     await habit.delete();
-    res.sendStatus(200);
+    res.sendStatus(200)
   }
 }
