@@ -34,6 +34,6 @@ apiRouter.use('/habits', verifyAccessToken, habitsRouter);
 app.use(handleError);
 
 
-app.listen(3001, () => {
+app.listen(3001, '0.0.0.0', () => {
   console.log('Server is listening on http://localhost:3001');
 });
