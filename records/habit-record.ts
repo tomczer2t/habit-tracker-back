@@ -5,6 +5,10 @@ import { FieldPacket } from 'mysql2';
 import { CustomError } from '../utils/handleError';
 import { updateStatsByDays } from '../utils/updateStatsByDays';
 
+interface HabitEntityResponse extends Omit<HabitEntity, 'stats'> {
+  stats: string;
+}
+
 type MysqlHabitsResponse = [HabitEntity[], FieldPacket[]];
 
 export class HabitRecord implements HabitEntity {
@@ -47,7 +51,8 @@ export class HabitRecord implements HabitEntity {
   static async listAllByUserId(userId: string) {
     const [res] = await pool.execute('SELECT * FROM `habits` WHERE `userId` = :userId ORDER BY `orderNo`', { userId }) as MysqlHabitsResponse;
     res.forEach(habitObj => {
-      updateStatsByDays(habitObj);
+      habitObj.stats = JSON.parse(habitObj.stats.toString());
+      updateStatsByDays({ ...habitObj });
     });
     return res.map(habit => new HabitRecord(habit));
   }
@@ -55,6 +60,7 @@ export class HabitRecord implements HabitEntity {
   static async getOneById(id: string) {
     const [res] = await pool.execute('SELECT * FROM `habits` WHERE `id` = :id', { id }) as MysqlHabitsResponse;
     if (!res[0]) return null;
+    res[0].stats = JSON.parse(res[0].stats.toString());
     updateStatsByDays(res[0]);
     return new HabitRecord(res[0]);
   }

@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import fsPromises from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
@@ -9,7 +8,7 @@ export const saveLog = async (txt: string, fileName: string) => {
   if (!existsSync(logsPathDir)) {
     await fsPromises.mkdir(logsPathDir);
   }
-  const dateTime = format(new Date(), 'dd/MM/yyyy\thh:mm:ss');
+  const dateTime = new Date().toLocaleString();
   const message = `${ dateTime }\t${uuid()}\t${ txt }\n`;
   await fsPromises.appendFile(join(logsPathDir, fileName), message);
 };
