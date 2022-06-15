@@ -4,7 +4,7 @@ export const updateStatsByDays = (habit: HabitEntity) => {
   const lastDays = Math.floor(habit.lastStatUpdateDate.setHours(0, 0, 0, 0) / (1000 * 60 * 60 * 24));
   const currDays = Math.floor(new Date().setHours(0, 0, 0, 0) / (1000 * 60 * 60 * 24));
   const differenceInDays = currDays - lastDays;
-
+  if (!habit) return;
   if (differenceInDays < 0) {
     for (let i = 0; i < Math.abs(differenceInDays); i++) {
       habit.stats.pop();
