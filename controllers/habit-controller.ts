@@ -1,18 +1,23 @@
 import { Request, Response } from 'express';
 import { HabitRecord } from '../records/habit-record';
 import { HabitEntity } from '../types';
-import { habitsRouter } from '../routes/habits-routes';
 
 export class HabitController {
   static async listHabits(req: Request, res: Response) {
-    const { user } = req.query as { user: string };
-    const habits = await HabitRecord.listAllByUserId(user);
+    const { user: userId } = req.query as { user: string };
+    const habits = await HabitRecord.listAllByUserId(userId);
+    if (habits[0] && habits[0]?.userId !== req.userId) {
+      return res.sendStatus(401);
+    }
     res.json(habits);
   }
 
   static async getOne(req: Request, res: Response) {
     const { habitId } = req.params;
     const habit = await HabitRecord.getOneById(habitId);
+    if (habit && habit.userId !== req.userId) {
+      return res.sendStatus(401);
+    }
     res.json(habit);
   }
 
@@ -29,8 +34,12 @@ export class HabitController {
   static async update(req: Request, res: Response) {
     const { habitId } = req.params;
     const habit = await HabitRecord.getOneById(habitId);
-    if (habit.userId !== req.userId) res.sendStatus(403);
-    if (!habit) return res.sendStatus(404);
+    if (habit && habit.userId !== req.userId) {
+      return res.sendStatus(403);
+    }
+    if (!habit) {
+      return res.sendStatus(404);
+    }
     const changes = req.body as HabitEntity;
     for (const key of Object.keys(changes) as (keyof HabitEntity)[]) {
       if (key === 'lastStatUpdateDate') {
@@ -47,7 +56,7 @@ export class HabitController {
   static async delete(req: Request, res: Response) {
     const { habitId } = req.params;
     const habit = await HabitRecord.getOneById(habitId);
-    if (habit.userId !== req.userId) res.sendStatus(403);
+    if (habit && habit.userId !== req.userId) res.sendStatus(403);
     await habit.delete();
     res.sendStatus(200);
   }
