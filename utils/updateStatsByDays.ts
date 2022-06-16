@@ -14,5 +14,4 @@ export const updateStatsByDays = (habit: HabitEntity, currClientDate?: string) =
   } else {
     habit.stats.push(...Array(differenceInDays).fill(0));
   }
-  // habit.lastStatUpdateDate = new Date(new Date().setHours(0, 0, 0, 0));
 };

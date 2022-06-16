@@ -14,8 +14,8 @@ export class SessionController {
     const match = await compare(password, user.password);
     if (!match) throw new CustomError('Wrong email or password', 401);
 
+    const accessToken = sign({ id: user.id }, config.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
     const refreshToken = sign({ id: user.id }, config.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-    const accessToken = sign({ id: user.id }, config.ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
     user.refreshToken = refreshToken;
     await user.update();
     res.cookie('__refresh', refreshToken, {
@@ -34,7 +34,7 @@ export class SessionController {
       const { id } = verify(refreshToken, config.REFRESH_TOKEN_SECRET) as { id: string };
       const user = await UserRecord.getById(id);
       if (!user) return res.sendStatus(403);
-      const accessToken = sign({ id }, config.ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
+      const accessToken = sign({ id }, config.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
       user.refreshToken = sign({ id: user.id }, config.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
       await user.update();
       res.json(accessToken);
