@@ -2,6 +2,7 @@
 
 
 ![Demo screenshot](static/images/demo-screenshot.png)
+Track your habits. Add new ones and improve old ones.
 
 ## Table of contents
 * [Demo](#demo)
