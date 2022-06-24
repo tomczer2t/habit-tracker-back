@@ -22,11 +22,11 @@ Main goals of this entire project was to practice making full-stack application 
 
 ## Technologies
 Server side application is created with i.a.:
-* typescript: 4.7.2
+* typescript: 4.7.2,
 * express: 4.18.1, 
 * mysql2: 2.3.3,
 * jsonwebtoken: 8.5.1, 
-* bcrypt: 5.0.1,
+* bcrypt: 5.0.1
 
 
 ## Inspiration 
