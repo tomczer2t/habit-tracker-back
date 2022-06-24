@@ -2,17 +2,24 @@ import { HabitRecord } from '../records/habit-record';
 import { HabitEntity } from '../types';
 import { pool } from '../utils/db';
 
+const testUserInDb = {
+  id: '1',
+  email: 'test.habit@test.com',
+}
+
 const initialData: HabitEntity = {
   name: 'running',
   orderNo: 1,
-  userId: '1',
   color: '#ffffff',
+  userId: testUserInDb.id,
+  firstStatDate: new Date(),
+  lastStatUpdateDate: new Date(),
 };
 
 let habit: HabitRecord;
 
-beforeAll(() => {
-  habit = new HabitRecord(initialData);
+beforeAll(async () => {
+  habit = new HabitRecord({ ...initialData });
 });
 afterAll(async () => {
   await pool.end();
@@ -28,12 +35,6 @@ test('Inserted habit should have an id as a valid v4 uuid.', async () => {
   expect(habit.id).toMatch(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i);
 });
 
-test('Inserted habit should have values of name, orderNo, userId, color properties equal to initial data values with the same properties.', () => {
-  expect(habit.color).toEqual(initialData.color);
-  expect(habit.userId).toEqual(initialData.userId);
-  expect(habit.orderNo).toEqual(initialData.orderNo);
-  expect(habit.name).toEqual(initialData.name);
-});
 
 test('Fresh inserted habit should have stats length equal to 40', () => {
   expect(habit.stats.length).toEqual(40);

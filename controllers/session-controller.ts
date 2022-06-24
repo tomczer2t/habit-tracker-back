@@ -14,8 +14,8 @@ export class SessionController {
     const match = await compare(password, user.password);
     if (!match) throw new CustomError('Wrong email or password', 401);
 
-    const refreshToken = sign({ id: user.id }, config.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
     const accessToken = sign({ id: user.id }, config.ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
+    const refreshToken = sign({ id: user.id }, config.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
     user.refreshToken = refreshToken;
     await user.update();
     res.cookie('__refresh', refreshToken, {

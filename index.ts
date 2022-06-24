@@ -21,7 +21,7 @@ app.use(credentials);
 app.use(cors(corsConfig));
 app.use(express.json());
 app.use(cookieParser());
-app.use(rateLimiter)
+app.use(rateLimiter);
 app.use(morgan('dev'));
 
 

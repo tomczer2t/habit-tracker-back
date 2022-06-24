@@ -9,13 +9,13 @@ export class CustomError extends Error {
 
 export const handleError = (err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log({ err });
-  saveLog(`${err.name}: ${err.message}`, 'errorLogs.txt');
   if (err instanceof CustomError) {
     res.status(err.status).json({
       success: false,
       message: err.message,
     });
   } else {
+    saveLog(`${err.name}: ${err.message}`, 'errorLogs.txt');
     res.status(500).json({
       success: false,
       message: 'Sorry, something went wrong. We are already trying to fix it. Please try again later.',
