@@ -9,3 +9,6 @@ usersRouter.route('/')
 usersRouter.route('/:userId')
   .patch(UserController.update)
   .delete(UserController.delete);
+
+usersRouter.route('/verify-account/:registrationToken')
+  .patch(UserController.verifyAccount);

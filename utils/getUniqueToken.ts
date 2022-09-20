@@ -3,7 +3,7 @@ import { UserRecord } from '../records/user-record';
 
 export const getUniqueToken = async (): Promise<string> => {
     const token = uuid();
-    if (await UserRecord.doesTokenExist(token)) {
+    if (await UserRecord.getByRegistrationToken(token)) {
       return await getUniqueToken();
     }
     return token;

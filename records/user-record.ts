@@ -27,7 +27,7 @@ export class UserRecord implements UserEntity {
     this.validate();
   }
 
-  private validate() {
+  private validate(): void {
     if (!this.email) {
       throw new CustomError('Email is required.');
     }
@@ -59,7 +59,7 @@ export class UserRecord implements UserEntity {
   }
 
 
-  async insert() {
+  async insert(): Promise<string> {
     try {
       this.id = uuid();
       this.password = await hash(this.password, await genSalt(10));
@@ -74,30 +74,30 @@ export class UserRecord implements UserEntity {
     }
   }
 
-  async update(password?: boolean) {
+  async update(password?: boolean): Promise<void> {
     if (password) {
       this.password = await hash(this.password, await genSalt(10));
-      await pool.execute('UPDATE `users` SET `email` = :email, `refreshToken` = :refreshToken, `password` = :password WHERE `id` = :id', this);
+      await pool.execute('UPDATE `users` SET `registrationToken` = :registrationToken, `accountStatus` = :accountStatus, `email` = :email, `refreshToken` = :refreshToken, `password` = :password WHERE `id` = :id', this);
     } else {
-      await pool.execute('UPDATE `users` SET `email` = :email, `refreshToken` = :refreshToken WHERE `id` = :id', this);
+      await pool.execute('UPDATE `users` SET `registrationToken` = :registrationToken, `accountStatus` = :accountStatus, `email` = :email, `refreshToken` = :refreshToken WHERE `id` = :id', this);
     }
   }
 
-  async delete() {
+  async delete(): Promise<void> {
     await pool.execute('DELETE FROM `users` WHERE `id` = :id', { id: this.id });
   }
 
-  static async getByEmail(email: string) {
+  static async getByEmail(email: string): Promise<UserRecord | null> {
     const [res] = await pool.execute('SELECT * FROM `users` WHERE `email` = :email', { email }) as MysqlUsersResponse;
     return res[0] ? new UserRecord(res[0]) : null;
   }
 
-  static async doesTokenExist(token: string): Promise<boolean> {
-    const [res] = await pool.execute('SELECT "id" FROM `users` WHERE `registrationToken` = :token', { token }) as MysqlUsersResponse;
-    return !!res[0];
+  static async getByRegistrationToken(token: string): Promise<UserRecord | null> {
+    const [res] = await pool.execute('SELECT * FROM `users` WHERE `registrationToken` = :token', { token }) as MysqlUsersResponse;
+    return res[0] ? new UserRecord(res[0]) : null;
   }
 
-  static async getById(id: string) {
+  static async getById(id: string): Promise<UserRecord | null> {
     const [res] = await pool.execute('SELECT * FROM `users` WHERE `id` = :id', { id }) as MysqlUsersResponse;
     return res[0] ? new UserRecord(res[0]) : null;
   }
