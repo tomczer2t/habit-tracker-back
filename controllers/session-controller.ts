@@ -41,7 +41,9 @@ export class SessionController {
     } catch (e) {
       if (e.message === 'invalid token') {
         res.sendStatus(403);
-      } else res.sendStatus(500);
+      } else {
+        res.sendStatus(500);
+      }
     }
   }
 

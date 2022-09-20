@@ -3,11 +3,13 @@ import { Request, Response } from 'express';
 import { CustomError } from '../utils/handleError';
 import { compare } from 'bcrypt';
 import { updateUserValidator } from '../utils/updateUserValidator';
+import { getUniqueToken } from '../utils/getUniqueToken';
 
 export class UserController {
   static async register(req: Request, res: Response) {
     const userReq = req.body;
     const user = new UserRecord(userReq);
+    user.registrationToken = await getUniqueToken();
     await user.insert();
     res.sendStatus(201);
   }

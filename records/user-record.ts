@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { hash, genSalt } from 'bcrypt';
 import { pool } from '../utils/db';
-import { UserEntity } from '../types'
+import { AccountStatus, UserEntity } from '../types';
 import { CustomError } from '../utils/handleError';
 import { FieldPacket } from 'mysql2';
 
@@ -13,13 +13,17 @@ export class UserRecord implements UserEntity {
   id?: string;
   email: string;
   password: string;
+  accountStatus: AccountStatus;
   refreshToken?: string;
+  registrationToken?: string;
 
   constructor(obj: UserEntity) {
     this.id = obj.id;
     this.email = obj.email;
     this.password = obj.password;
+    this.accountStatus = obj.accountStatus;
     this.refreshToken = obj.refreshToken;
+    this.registrationToken = obj.registrationToken;
     this.validate();
   }
 
@@ -59,10 +63,9 @@ export class UserRecord implements UserEntity {
     try {
       this.id = uuid();
       this.password = await hash(this.password, await genSalt(10));
-      await pool.execute('INSERT INTO `users` (`id`, `email`, `password`) VALUES (:id, :email, :password)', this);
+      await pool.execute('INSERT INTO `users` (`id`, `email`, `password`, `registrationToken`) VALUES (:id, :email, :password, :registrationToken)', this);
       return this.id;
     } catch (e) {
-      console.log(e);
       throw new CustomError('Email is already in use.', 409);
     }
   }
@@ -83,6 +86,11 @@ export class UserRecord implements UserEntity {
   static async getByEmail(email: string) {
     const [res] = await pool.execute('SELECT * FROM `users` WHERE `email` = :email', { email }) as MysqlUsersResponse;
     return res[0] ? new UserRecord(res[0]) : null;
+  }
+
+  static async doesTokenExist(token: string): Promise<boolean> {
+    const [res] = await pool.execute('SELECT "id" FROM `users` WHERE `registrationToken` = :token', { token }) as MysqlUsersResponse;
+    return !!res[0];
   }
 
   static async getById(id: string) {
