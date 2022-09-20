@@ -66,7 +66,11 @@ export class UserRecord implements UserEntity {
       await pool.execute('INSERT INTO `users` (`id`, `email`, `password`, `registrationToken`) VALUES (:id, :email, :password, :registrationToken)', this);
       return this.id;
     } catch (e) {
-      throw new CustomError('Email is already in use.', 409);
+      if (e.message.includes('Duplicate')) {
+        throw new CustomError('Email is already in use.', 409);
+      } else {
+        throw new Error(e);
+      }
     }
   }
 

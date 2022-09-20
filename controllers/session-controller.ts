@@ -4,6 +4,7 @@ import { sign, verify } from 'jsonwebtoken';
 import { UserRecord } from '../records/user-record';
 import { CustomError } from '../utils/handleError';
 import { config } from '../config/config';
+import { AccountStatus } from '../types';
 
 export class SessionController {
   static async create(req: Request, res: Response) {
@@ -13,7 +14,7 @@ export class SessionController {
     if (!user) throw new CustomError('Wrong email or password', 401);
     const match = await compare(password, user.password);
     if (!match) throw new CustomError('Wrong email or password', 401);
-
+    if (user.accountStatus === AccountStatus.PENDING) throw new CustomError('Email is not verified yet', 401);
     const accessToken = sign({ id: user.id }, config.ACCESS_TOKEN_SECRET, { expiresIn: '15min' });
     const refreshToken = sign({ id: user.id }, config.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
     user.refreshToken = refreshToken;

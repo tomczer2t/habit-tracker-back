@@ -15,7 +15,7 @@ export const handleError = (err: Error, req: Request, res: Response, next: NextF
       message: err.message,
     });
   } else {
-    saveLog(`${err.name}: ${err.message}`, 'errorLogs.txt');
+    void saveLog(`${err.name}: ${err.message}`, 'errorLogs.txt');
     res.status(500).json({
       success: false,
       message: 'Sorry, something went wrong. We are already trying to fix it. Please try again later.',
