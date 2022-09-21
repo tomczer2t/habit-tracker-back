@@ -14,8 +14,8 @@ const mailConfig = config.NODE_ENV === 'develop' ? {
   port: 587,
   secure: true,
   auth: {
-    user: 'habit.tracker@habit-tracker.networkmanager.pl',
-    pass: 'uLxlRw7Mw',
+    user: config.MAIL_USER,
+    pass: config.MAIL_PASS,
   },
 };
 

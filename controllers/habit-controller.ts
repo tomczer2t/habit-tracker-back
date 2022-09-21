@@ -25,6 +25,7 @@ export class HabitController {
     const obj = req.body as Pick<HabitEntity, 'userId' | 'name' | 'color' | 'lastStatUpdateDate'>;
     const firstStatDate = new Date(new Date(obj.lastStatUpdateDate).setHours(0,0,0,0) - 39 * 24 * 60 * 60 * 1000);
     const lastStatUpdateDate = new Date(new Date(obj.lastStatUpdateDate).setHours(0,0,0,0));
+    console.log({ obj, firstStatDate, lastStatUpdateDate });
     const currentlyAddedHabitsNo = await HabitRecord.getHabitsCount(obj.userId);
     const habit = new HabitRecord({ ...obj, orderNo: currentlyAddedHabitsNo + 1, firstStatDate, lastStatUpdateDate });
     await habit.insert();
