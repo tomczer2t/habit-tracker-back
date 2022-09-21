@@ -1,9 +1,11 @@
 import { UserRecord } from '../records/user-record';
 import { pool } from '../utils/db';
+import { AccountStatus, UserEntity } from '../types';
 
-const initialData = {
+const initialData: UserEntity = {
   email: 'test@test.test',
   password: 'Testowe123?',
+  accountStatus: AccountStatus.ACTIVE
 };
 
 let user: UserRecord;
