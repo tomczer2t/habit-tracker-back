@@ -1,7 +1,7 @@
 # Habit tracker: back-end
 
 
-![Demo screenshot](static/images/demo-screenshot.png)
+<img width="1386" alt="demo" src="https://user-images.githubusercontent.com/88483398/191661974-24f47728-7ee6-4537-a7eb-35e10c6b8e1a.png">
 Track your habits. Add new ones and improve old ones.
 
 ## Table of contents
