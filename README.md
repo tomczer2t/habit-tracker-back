@@ -5,13 +5,13 @@
 Track your habits. Add new ones and improve old ones.
 
 ## Table of contents
-* [Demo](#demo)
+<!--- * [Demo](#demo) -->
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Inspiration](#inspiration)
 
-## Demo
-Here is a working live demo: https://habit-tracker.networkmanager.pl/
+<!--- ## Demo
+Here is a working live demo: https://habit-tracker.networkmanager.pl/ -->
 
 ## General info
 This project is a server side application, made to track habits.
